@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ritual Hermético – 21 Dias</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-main: #05020a;
+      --bg-card: #0d0718;
+      --bg-card-alt: #140a24;
+      --accent: #d4a72c;
+      --accent-soft: rgba(212, 167, 44, 0.2);
+      --text-main: #f5f0ff;
+      --text-muted: #a89cc5;
+      --danger: #ff4b6b;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.6);
+      --radius-xl: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #160b35 0, #05020a 50%, #020008 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px 12px 40px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .header {
+      padding: 18px 18px 20px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, #20103d, #0a050f);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(212, 167, 44, 0.5);
+      position: sticky;
+      top: 8px;
+      z-index: 10;
+      backdrop-filter: blur(16px);
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .title span.icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(212, 167, 44, 0.4);
+      color: var(--accent);
+      background: rgba(8, 4, 16, 0.8);
+    }
+
+    .summary {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .progress-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .progress-bar-wrap {
+      flex: 1;
+      margin-left: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      overflow: hidden;
+      height: 8px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f7d87c, #ff86c0);
+      transition: width 0.25s ease-out;
+    }
+
+    .reset-btn {
+      margin-left: auto;
+      background: transparent;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .reset-btn:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .days-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .day-card {
+      background: linear-gradient(145deg, var(--bg-card), var(--bg-card-alt));
+      border-radius: var(--radius-xl);
+      padding: 14px 14px 16px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .day-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(212, 167, 44, 0.13), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .day-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .day-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .day-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(212, 167, 44, 0.6);
+      color: var(--accent);
+    }
+
+    .task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 6px 0 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .task {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 4px 6px;
+      border-radius: 10px;
+      transition: background 0.15s ease;
+    }
+
+    .task:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .task input[type="checkbox"] {
+      margin-top: 2px;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .task-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .quote {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      font-size: 0.78rem;
+      color: #ffe7a6;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote strong {
+      color: var(--accent);
+    }
+
+    .day-progress {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 16px 10px 32px;
+      }
+      .header {
+        padding: 14px 14px 16px;
+      }
+      .title {
+        font-size: 1.25rem;
+      }
+      .days-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="title">
+        <span class="icon">☿</span>
+        Ritual Hermético – 21 Dias
+      </div>
+      <div class="subtitle">
+        Marque cada ação concluída. Disciplina no corpo, foco na mente, dinheiro como consequência.
+      </div>
+
+      <div class="pill-row">
+        <div class="pill">Acordar 4h30</div>
+        <div class="pill">Academia 5h–6h</div>
+        <div class="pill">Corpo magro</div>
+        <div class="pill">Mente rica</div>
+      </div>
+
+      <div class="summary">
+        <div class="progress-text" id="global-progress-text">
+          Progresso total: 0 / 21 dias concluídos
+        </div>
+        <button class="reset-btn" id="reset-btn" title="Limpar todas as marcações">
+          ⟳ Resetar tudo
+        </button>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="global-progress-bar"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="days-grid" id="days-grid"></main>
+  </div>
+
+  <script>
+    // Configuração das tarefas diárias (mesmas ações em todos os dias)
+    const dailyTasks = [
+      { id: "wake", label: "Acordar às 4h30 sem negociar com o despertador." },
+      { id: "ritual", label: "Fazer o ritual matinal (respiração, espelho, movimento, água)." },
+      { id: "gym", label: "Treinar na academia das 5h às 6h." },
+      { id: "breakfast", label: "Primeira refeição com proteína limpa (sem açúcar, sem farinha)." },
+      { id: "money_action", label: "Executar 1 ação de dinheiro (reel, pitch, estudo ou follow-up)." },
+      { id: "conscious_meal", label: "Fazer pelo menos 1 refeição perguntando: 'Isso me constrói ou me destrói?'" },
+      { id: "night_review", label: "Revisar o dia, identificar onde foi fraco e declarar como vai corrigir." },
+      { id: "night_mantra", label: "Repetir o mantra noturno antes de dormir." }
+    ];
+
+    // Frases motivacionais por dia
+    const dailyQuotes = [
+      "Dia 1 – <strong>Hoje eu decido.</strong> Meu futuro começa no primeiro passo, não no plano perfeito.",
+      "Dia 2 – <strong>Quem executa, vence.</strong> A maioria só pensa em mudar, eu já comecei.",
+      "Dia 3 – <strong>Meu corpo entende ações, não promessas.</strong>",
+      "Dia 4 – <strong>Eu não fujo da disciplina.</strong> Eu a uso como arma.",
+      "Dia 5 – <strong>Cada treino é um voto na versão que eu quero ser.</strong>",
+      "Dia 6 – <strong>Eu não como para anestesiar, como para fortalecer.</strong>",
+      "Dia 7 – <strong>Uma semana feita.</strong> Já não sou mais o mesmo de quando comecei.",
+      "Dia 8 – <strong>Eu mereço a vida que estou construindo, não a que eu herdei.</strong>",
+      "Dia 9 – <strong>Minha mente está aprendendo que eu não falho comigo.</strong>",
+      "Dia 10 – <strong>Quem aguenta 10 dias, aguenta o que quiser.</strong>",
+      "Dia 11 – <strong>Meu corpo é o templo, não o depósito dos meus excessos.</strong>",
+      "Dia 12 – <strong>O dinheiro gosta de quem se leva a sério.</strong>",
+      "Dia 13 – <strong>Eu não preciso de motivação, eu tenho compromisso.</strong>",
+      "Dia 14 – <strong>Dois terços da jornada.</strong> Agora é honra, não vontade.",
+      "Dia 15 – <strong>Enquanto outros desistem, eu ajusto e continuo.</strong>",
+      "Dia 16 – <strong>Minha nova identidade já está instalada.</strong>",
+      "Dia 17 – <strong>Cada não que dou à fraqueza é um sim à minha grandeza.</strong>",
+      "Dia 18 – <strong>Sou a soma das ações que repito, não dos problemas que tenho.</strong>",
+      "Dia 19 – <strong>Estou mais perto do que longe.</strong> Não negocio nesta fase.",
+      "Dia 20 – <strong>Quem chega até aqui não volta para a antiga versão.</strong>",
+      "Dia 21 – <strong>Eu provei para mim mesmo.</strong> Agora, isso não é desafio, é estilo de vida."
+    ];
+
+    const STORAGE_KEY = "hermetico21-progress-v1";
+
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        console.error("Erro ao carregar progresso:", e);
+        return {};
+      }
+    }
+
+    function saveProgress(state) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.error("Erro ao salvar progresso:", e);
+      }
+    }
+
+    const progressState = loadProgress();
+
+    function getTaskKey(day, taskId) {
+      return `day${day}_${taskId}`;
+    }
+
+    function isDayComplete(day) {
+      return dailyTasks.every(t => progressState[getTaskKey(day, t.id)]);
+    }
+
+    function updateGlobalProgress() {
+      const totalDays = 21;
+      let completedDays = 0;
+      for (let d = 1; d <= totalDays; d++) {
+        if (isDayComplete(d)) completedDays++;
+      }
+      const percent = (completedDays / totalDays) * 100;
+
+      const textEl = document.getElementById("global-progress-text");
+      const barEl = document.getElementById("global-progress-bar");
+      if (textEl) {
+        textEl.textContent = `Progresso total: ${completedDays} / ${totalDays} dias concluídos`;
+      }
+      if (barEl) {
+        barEl.style.width = `${percent}%`;
+      }
+
+      // Atualiza textos de progresso em cada card
+      for (let d = 1; d <= totalDays; d++) {
+        const span = document.getElementById(`day-progress-${d}`);
+        if (!span) continue;
+        const doneCount = dailyTasks.filter(t => progressState[getTaskKey(d, t.id)]).length;
+        span.textContent = `Tarefas concluídas: ${doneCount} / ${dailyTasks.length}`;
+      }
+    }
+
+    function toggleTask(day, taskId, checked) {
+      const key = getTaskKey(day, taskId);
+      progressState[key] = checked;
+      saveProgress(progressState);
+      updateGlobalProgress();
+    }
+
+    function resetAll() {
+      if (!confirm("Tem certeza que deseja limpar todas as marcações dos 21 dias?")) return;
+      for (let d = 1; d <= 21; d++) {
+        dailyTasks.forEach(t => {
+          const key = getTaskKey(d, t.id);
+          delete progressState[key];
+        });
+      }
+      saveProgress(progressState);
+
+      // Desmarca todos os checkboxes visualmente
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      updateGlobalProgress();
+    }
+
+    function render() {
+      const grid = document.getElementById("days-grid");
+      if (!grid) return;
+
+      for (let day = 1; day <= 21; day++) {
+        const card = document.createElement("article");
+        card.className = "day-card";
+
+        const header = document.createElement("div");
+        header.className = "day-header";
+
+        const title = document.createElement("div");
+        title.className = "day-title";
+        title.textContent = `Dia ${day}`;
+
+        const badge = document.createElement("div");
+        badge.className = "day-badge";
+        badge.textContent = "Disciplina > Vontade";
+
+        header.appendChild(title);
+        header.appendChild(badge);
+
+        const list = document.createElement("ul");
+        list.className = "task-list";
+
+        dailyTasks.forEach(task => {
+          const li = document.createElement("li");
+          li.className = "task";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          const key = getTaskKey(day, task.id);
+          checkbox.checked = !!progressState[key];
+          checkbox.id = key;
+
+          checkbox.addEventListener("change", (e) => {
+            toggleTask(day, task.id, e.target.checked);
+          });
+
+          const label = document.createElement("label");
+          label.className = "task-label";
+          label.htmlFor = key;
+          label.textContent = task.label;
+
+          li.appendChild(checkbox);
+          li.appendChild(label);
+          list.appendChild(li);
+        });
+
+        const quote = document.createElement("div");
+        quote.className = "quote";
+        quote.innerHTML = dailyQuotes[day - 1] || "";
+
+        const dayProgress = document.createElement("div");
+        dayProgress.className = "day-progress";
+        dayProgress.id = `day-progress-${day}`;
+        // texto inicial será atualizado depois por updateGlobalProgress()
+
+        card.appendChild(header);
+        card.appendChild(list);
+        card.appendChild(quote);
+        card.appendChild(dayProgress);
+
+        grid.appendChild(card);
+      }
+
+      updateGlobalProgress();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      render();
+      const resetBtn = document.getElementById("reset-btn");
+      if (resetBtn) {
+        resetBtn.addEventListener("click", resetAll);
+      }
+    });
+  </script>
+</body>
+</html>
